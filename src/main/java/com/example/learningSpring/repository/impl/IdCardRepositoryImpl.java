@@ -2,198 +2,104 @@ package com.example.learningSpring.repository.impl;
 
 import com.example.learningSpring.model.entity.IdCard;
 import com.example.learningSpring.repository.IdCardRepository;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Repository
 public class IdCardRepositoryImpl implements IdCardRepository {
 
+    private final JdbcTemplate jdbcTemplate;
+
+    public IdCardRepositoryImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
     @Override
     public List<IdCard> getAll() {
+        String query = "SELECT i.id, i.name, i.surname, i.age, i.fin_code, i.series, i.serial_number FROM vs_learning.id_card i;";
 
-        try {
-            Connection conn = getConnection();
-
-            String query = "SELECT i.id, i.name, i.surname, i.age, i.fin_code, i.series, i.serial_number FROM vs_learning.id_card i;";
-            Statement statement = conn.createStatement();
-            ResultSet resultSet = statement.executeQuery(query);
-
-            List<IdCard> idCards = new ArrayList<>();
-
-            while (resultSet.next()) {
-                IdCard idCard = IdCard.builder()
-                        .id(resultSet.getLong("id"))
-                        .name(resultSet.getString("name"))
-                        .surname(resultSet.getString("surname"))
-                        .age(resultSet.getInt("age"))
-                        .finCode(resultSet.getString("fin_code"))
-                        .series(resultSet.getString("series"))
-                        .serialNumber(resultSet.getString("serial_number"))
-                        .build();
-
-                idCards.add(idCard);
+        RowMapper<IdCard> rowMapper = new RowMapper<>() {
+            @Override
+            public IdCard mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return buildIdCard(rs);
             }
+        };
 
-            conn.close();
-            return idCards;
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return Collections.emptyList();
-        }
+        return jdbcTemplate.query(query, rowMapper);
     }
 
     @Override
     public IdCard getById(Long id) {
+        String query = "SELECT i.id, i.name, i.surname, i.age, i.fin_code, i.series, i.serial_number FROM vs_learning.id_card i WHERE i.id = ?";
 
-        try {
-            Connection conn = getConnection();
-
-            String query = "SELECT i.id, i.name, i.surname, i.age, i.fin_code, i.series, i.serial_number FROM vs_learning.id_card i WHERE i.id = ?";
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setLong(1, id);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next() == false) {
-                return null;
+        RowMapper<IdCard> rowMapper = new RowMapper<IdCard>() {
+            @Override
+            public IdCard mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return buildIdCard(rs);
             }
-            IdCard idCard = IdCard.builder()
-                    .id(resultSet.getLong("id"))
-                    .name(resultSet.getString("name"))
-                    .surname(resultSet.getString("surname"))
-                    .age(resultSet.getInt("age"))
-                    .finCode(resultSet.getString("fin_code"))
-                    .series(resultSet.getString("series"))
-                    .serialNumber(resultSet.getString("serial_number"))
+        };
+
+        List<IdCard> idCards = jdbcTemplate.query(query, rowMapper, id);
+
+        if (idCards.isEmpty()) {
+            return IdCard.builder() //TODO: json problem verir bu hissede null Integer ile bagli
                     .build();
-
-            conn.close();
-            return idCard;
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
         }
+
+        return idCards.get(0);
     }
 
     @Override
     public boolean insert(IdCard idCard) {
+        String query = "INSERT INTO vs_learning.id_card (name, surname, age, fin_code, series, serial_number) VALUES (?, ?, ?, ?, ?, ?);";
 
-        try {
-            Connection conn = getConnection();
+        int res = jdbcTemplate.update(query, idCard.getName(), idCard.getSurname(), idCard.getAge(), idCard.getFinCode(), idCard.getSeries(), idCard.getSerialNumber());
 
-            String query = "INSERT INTO vs_learning.id_card (name, surname, age, fin_code, series, serial_number) VALUES (?, ?, ?, ?, ?, ?);";
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setString(1, idCard.getName());
-            preparedStatement.setString(2, idCard.getSurname());
-            preparedStatement.setInt(3, idCard.getAge());
-            preparedStatement.setString(4, idCard.getFinCode());
-            preparedStatement.setString(5, idCard.getSeries());
-            preparedStatement.setString(6, idCard.getSerialNumber());
-
-            preparedStatement.executeUpdate();
-
-            conn.close();
-            return true;
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return false;
-        }
+        return res != 0;
     }
 
     @Override
     public boolean update(IdCard idCard) {
+        String query = "UPDATE vs_learning.id_card i SET i.name = ?, i.surname = ?, i.age = ?, i.fin_code = ?, series = ?, i.serial_number = ? WHERE i.id = ?";
 
-        try {
-            Connection conn = getConnection();
+        int res = jdbcTemplate.update(query, idCard.getName(), idCard.getSurname(), idCard.getAge(), idCard.getFinCode(), idCard.getSeries(), idCard.getSerialNumber(), idCard.getId());
 
-            String query = "UPDATE vs_learning.id_card i SET i.name = ?, i.surname = ?, i.age = ?, i.fin_code = ?, series = ?, i.serial_number = ? WHERE i.id = ?";
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setString(1, idCard.getName());
-            preparedStatement.setString(2, idCard.getSurname());
-            preparedStatement.setInt(3, idCard.getAge());
-            preparedStatement.setString(4, idCard.getFinCode());
-            preparedStatement.setString(5, idCard.getSeries());
-            preparedStatement.setString(6, idCard.getSerialNumber());
-            preparedStatement.setLong(7, idCard.getId());
-
-            preparedStatement.executeUpdate();
-
-            conn.close();
-            return true;
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return false;
-        }
+        return res != 0;
     }
 
     @Override
     public boolean updateAge(Long id, Integer age) {
+        String query = "UPDATE vs_learning.id_card i SET i.age = ? WHERE i.id = ?";
 
-        try {
-            Connection conn = getConnection();
+        int res = jdbcTemplate.update(query, age, id);
 
-            String query = "UPDATE vs_learning.id_card i SET i.age = ? WHERE i.id = ?";
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setInt(1, age);
-            preparedStatement.setLong(2, id);
-
-            preparedStatement.executeUpdate();
-
-            conn.close();
-            return true;
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return false;
-        }
+        return res != 0;
     }
-
 
     @Override
     public boolean delete(Long id) {
+        String query = "DELETE FROM vs_learning.id_card i WHERE i.id = ?;";
 
-        try {
-            Connection conn = getConnection();
+        int res = jdbcTemplate.update(query, id);
 
-            String query = "DELETE FROM vs_learning.id_card i WHERE i.id = ?;";
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setLong(1, id);
-
-            preparedStatement.executeUpdate();
-
-            conn.close();
-            return true;
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return false;
-        }
+        return res != 0;
     }
 
-    private Connection getConnection() {
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-
-            String url = "jdbc:mysql://allinone.cn5daduvgses.us-east-1.rds.amazonaws.com:3306/vs_learning";
-            String username = "admin";
-            String password = "Admin1234";
-            return DriverManager.getConnection(url, username, password);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException("exception occurred");
-        }
+    private IdCard buildIdCard(ResultSet rs) throws SQLException {
+        return IdCard.builder()
+                .id(rs.getLong("id"))
+                .name(rs.getString("name"))
+                .surname(rs.getString("surname"))
+                .age(rs.getInt("age"))
+                .finCode(rs.getString("fin_code"))
+                .series(rs.getString("series"))
+                .serialNumber(rs.getString("serial_number"))
+                .build();
     }
-
 }

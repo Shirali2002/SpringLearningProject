@@ -91,7 +91,7 @@ public class IdCard {
         }
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -115,7 +115,7 @@ public class IdCard {
         this.surname = surname;
     }
 
-    public int getAge() {
+    public Integer getAge() {
         return age;
     }
 
