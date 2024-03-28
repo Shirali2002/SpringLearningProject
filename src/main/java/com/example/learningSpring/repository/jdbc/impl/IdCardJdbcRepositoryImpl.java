@@ -1,24 +1,21 @@
-package com.example.learningSpring.repository.impl;
+package com.example.learningSpring.repository.jdbc.impl;
 
 import com.example.learningSpring.model.entity.IdCard;
-import com.example.learningSpring.repository.IdCardRepository;
+import com.example.learningSpring.repository.jdbc.IdCardJdbcRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class IdCardRepositoryImpl implements IdCardRepository {
+@RequiredArgsConstructor
+public class IdCardJdbcRepositoryImpl implements IdCardJdbcRepository {
 
     private final JdbcTemplate jdbcTemplate;
-
-    public IdCardRepositoryImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     @Override
     public List<IdCard> getAll() {
@@ -47,12 +44,16 @@ public class IdCardRepositoryImpl implements IdCardRepository {
 
         List<IdCard> idCards = jdbcTemplate.query(query, rowMapper, id);
 
-        if (idCards.isEmpty()) {
-            return IdCard.builder() //TODO: json problem verir bu hissede null Integer ile bagli
-                    .build();
-        }
+        return idCards.stream()
+                .findFirst()
+                .orElse(IdCard.builder().build());
 
-        return idCards.get(0);
+//        if (idCards.isEmpty()) {
+//            return IdCard.builder() //TODO: json problem verir bu hissede null Integer ile bagli
+//                    .build();
+//        }
+//
+//        return idCards.get(0);
     }
 
     @Override

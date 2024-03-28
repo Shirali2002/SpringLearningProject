@@ -3,60 +3,49 @@ package com.example.learningSpring.mapper;
 import com.example.learningSpring.model.dto.request.IdCardRequest;
 import com.example.learningSpring.model.dto.response.IdCardResponse;
 import com.example.learningSpring.model.entity.IdCard;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@Component
-public class IdCardMapper {
+/**
+ * @author Shirali Alihummatov
+ */
+@Mapper
+public interface IdCardMapper {
 
-    public List<IdCardResponse> toIdCardResponseList(List<IdCard> idCardList) {
-        List<IdCardResponse> idCardResponseList = new ArrayList<>();
+    IdCardMapper INSTANCE = Mappers.getMapper(IdCardMapper.class);
 
-        for (IdCard idCard : idCardList) {
-            IdCardResponse idCardResponse = toIdCardResponse(idCard);
-            idCardResponseList.add(idCardResponse);
-        }
+    List<IdCardResponse> toIdCardResponseList(List<IdCard> idCardList);
 
-        return idCardResponseList;
-    }
+//    @Mapping(target = "id", source = "id", qualifiedByName = "buildUserFriendlyId")
+    IdCardResponse toIdCardResponse(IdCard idCard);
 
-    public IdCardResponse toIdCardResponse(IdCard idCard) {
-        IdCardResponse idCardResponse = IdCardResponse.builder()
-                .id(idCard.getId())
-                .name(idCard.getName())
-                .surname(idCard.getSurname())
-                .age(idCard.getAge())
-                .finCode(idCard.getFinCode())
-                .series(idCard.getSeries())
-                .serialNumber(idCard.getSerialNumber())
-                .build();
+//    @Named("buildUserFriendlyId")
+//    default Long buildUserFriendlyId(Long id) {
+//        if (id == null) {
+//            return null;
+//        }
+//
+//        return id+1;
+//    }
 
-        return idCardResponse;
-    }
 
-    public IdCard toIdCard(IdCardRequest idCardRequest) {
-        return IdCard.builder()
-                .name(idCardRequest.getName())
-                .surname(idCardRequest.getSurname())
-                .age(idCardRequest.getAge())
-                .finCode(idCardRequest.getFinCode())
-                .series(idCardRequest.getSeries())
-                .serialNumber(idCardRequest.getSerialNumber())
-                .build();
-    }
 
-    public IdCard toIdCard(Long id, IdCardRequest idCardRequest) {
-        return IdCard.builder()
-                .id(id)
-                .name(idCardRequest.getName())
-                .surname(idCardRequest.getSurname())
-                .age(idCardRequest.getAge())
-                .finCode(idCardRequest.getFinCode())
-                .series(idCardRequest.getSeries())
-                .serialNumber(idCardRequest.getSerialNumber())
-                .build();
-    }
+
+//    @Mapping(target = "id", constant = "-1L")
+    IdCard toIdCard(IdCardRequest idCardRequest);
+
+//    @Mapping(target = "id", source = "id")
+//    @Mapping(target = "name", source = "idCardRequest.name")
+//    @Mapping(target = "surname", source = "idCardRequest.surname")
+//    @Mapping(target = "age", source = "idCardRequest.age")
+//    @Mapping(target = "finCode", source = "idCardRequest.finCode")
+//    @Mapping(target = "series", source = "idCardRequest.series")
+//    @Mapping(target = "serialNumber", source = "idCardRequest.serialNumber")
+    IdCard toIdCard(Long id, IdCardRequest idCardRequest);
 
 }
