@@ -3,7 +3,6 @@ package com.example.learningSpring.repository.mapper;
 import com.example.learningSpring.model.entity.IdCard;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.security.core.parameters.P;
 
 import java.util.List;
 import java.util.Optional;

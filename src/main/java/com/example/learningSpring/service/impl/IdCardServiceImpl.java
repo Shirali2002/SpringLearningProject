@@ -8,12 +8,14 @@ import com.example.learningSpring.repository.jdbc.IdCardJdbcRepository;
 import com.example.learningSpring.repository.mapper.IdCardMyBatisRepository;
 import com.example.learningSpring.service.IdCardService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class IdCardServiceImpl implements IdCardService {
@@ -34,7 +36,9 @@ public class IdCardServiceImpl implements IdCardService {
     public IdCardResponse getIdCardById(Long id) {
         Optional<IdCard> idCardOptional = idCardMyBatisRepository.findById(id);
 
-        return idCardOptional.map(idCardMapper::toIdCardResponse).orElse(null);
+        return idCardOptional
+                .map(idCardMapper::toIdCardResponse)
+                .orElse(null);
 
 //        if (idCardOptional.isEmpty()) {
 //            return null;
@@ -45,8 +49,11 @@ public class IdCardServiceImpl implements IdCardService {
 
     @Override
     public void addIdCard(IdCardRequest idCardRequest) {
+        log.info("AddIdCard request received. IdCardRequest: {}", idCardRequest);
         IdCard idCard = idCardMapper.toIdCard(idCardRequest);
+
         idCardMyBatisRepository.insert(idCard);
+        log.info("Add process was successful.");
     }
 
     @Override
