@@ -6,12 +6,12 @@
 
     <select id="findAll" resultType="IdCard">
         SELECT <include refid="idCardBaseColumns"></include>
-          FROM vs_learning.id_card i
+          FROM defaultdb.id_card i
     </select>
 
     <select id="findById" resultType="IdCard">
         SELECT <include refid="idCardBaseColumns"></include>
-          FROM vs_learning.id_card i
+          FROM defaultdb.id_card i
         <where>
             i.id = #{id}
         </where>
@@ -19,7 +19,7 @@
 
     <insert id="insert">
         INSERT
-          INTO vs_learning.id_card (name,
+          INTO defaultdb.id_card (name,
                                     surname,
                                     age,
                                     fin_code,
@@ -34,7 +34,7 @@
     </insert>
 
     <update id="update">
-        UPDATE vs_learning.id_card i
+        UPDATE defaultdb.id_card i
            SET i.name = #{name, jdbcType=NVARCHAR},
                i.surname = #{surname, jdbcType=NVARCHAR},
                i.age = #{age},
@@ -47,7 +47,7 @@
     </update>
 
     <update id="updateAge">
-        UPDATE vs_learning.id_card i
+        UPDATE defaultdb.id_card i
         SET i.age = #{age}
         <where>
             i.id = #{id}
@@ -56,7 +56,7 @@
 
     <delete id="delete">
         DELETE
-          FROM vs_learning.id_card i
+          FROM defaultdb.id_card i
         <where>
             i.id = #{id}
         </where>

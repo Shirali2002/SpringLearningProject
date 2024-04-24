@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -25,9 +26,15 @@ public class IdCardServiceImpl implements IdCardService {
 
     @Override
     public List<IdCardResponse> getAllIdCards() {
-        List<IdCard> idCards = idCardMyBatisRepository.findAll();
-
-        List<IdCardResponse> idCardResponseList = idCardMapper.toIdCardResponseList(idCards);
+//        List<IdCard> idCards = idCardMyBatisRepository.findAll();
+//
+//        List<IdCardResponse> idCardResponseList = idCardMapper.toIdCardResponseList(idCards);
+        List<IdCardResponse> idCardResponseList = new ArrayList<>();
+        IdCardResponse idCardResponse = new IdCardResponse();
+        idCardResponse.setName("shirali");
+        idCardResponse.setId(2L);
+        idCardResponse.setFinCode("67sbkl3");
+        idCardResponseList.add( idCardResponse);
 
         return idCardResponseList;
     }

@@ -1,10 +1,17 @@
 package com.example.learningSpring.filter;
 
 import com.example.learningSpring.model.dto.request.LoginRequest;
+import com.example.learningSpring.util.JwtProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -15,7 +22,12 @@ import java.util.Objects;
  * @author Shirali Alihummatov
  */
 @Component
+@RequiredArgsConstructor
 public class AuthorizationFilter extends OncePerRequestFilter {
+
+    private final JwtProvider jwtProvider;
+    private final UserDetailsService userDetailsService;
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -27,11 +39,31 @@ public class AuthorizationFilter extends OncePerRequestFilter {
             return;
         }
 
-        String token = authorization.substring(7);
+        String token = authorization.substring(7); // Bearer sdkjfnskfjnsjkdnf
 //        String token = null.substring(7); ---> NullPointer Exception
 
 
         // tokeni extract edib icindeki datalari check edeceyik
+        String username = jwtProvider.extractUsername(token);
+
+        if (Objects.isNull(username) || Objects.nonNull(SecurityContextHolder.getContext().getAuthentication())) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+        if (!jwtProvider.isValid(token, userDetails)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+        filterChain.doFilter(request, response);
     }
 
 }

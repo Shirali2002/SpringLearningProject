@@ -6,7 +6,7 @@
 
     <insert id="insert">
         INSERT
-          INTO vs_learning.user (username,
+          INTO defaultdb.user (username,
                                     password,
                                     name,
                                     surname,
@@ -20,7 +20,7 @@
 
     <select id="findByUsername" resultType="User">
         SELECT <include refid="userBaseColumns"></include>
-        FROM user u
+        FROM defaultdb.user u
         WHERE u.username = #{username};
     </select>
 
