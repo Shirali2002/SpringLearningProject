@@ -1,5 +1,6 @@
 package com.example.learningSpring.service.impl;
 
+import com.example.learningSpring.exception.CommonException;
 import com.example.learningSpring.mapper.UserMapper;
 import com.example.learningSpring.model.dto.request.LoginRequest;
 import com.example.learningSpring.model.dto.request.RegisterRequest;
@@ -10,12 +11,12 @@ import com.example.learningSpring.repository.mapper.UserMyBatisRepository;
 import com.example.learningSpring.service.UserService;
 import com.example.learningSpring.util.JwtProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -35,14 +36,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword());
-        authenticationManager.authenticate(authenticationToken);
         Optional<User> userOptional = getByUsername(loginRequest.getUsername());
 
         if (userOptional.isEmpty()) {
-            return LoginResponse.withResponse("user is not exist.");
+            throw new CommonException("1000", "user not exist in db", HttpStatus.BAD_REQUEST);
+//            throw new UserNotExistException("user not exist");
+//            return LoginResponse.withResponse("user is not exist."); // throw NotExistException
         }
+
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword());
+        authenticationManager.authenticate(authenticationToken);
+
 
         String token = jwtProvider.generateToken(userOptional.get());
 
@@ -55,7 +60,8 @@ public class UserServiceImpl implements UserService {
 //        null.equals(registerRequest.getConfirmPassword()) ---> NullPointerException
 
         if (!Objects.equals(registerRequest.getPassword(), registerRequest.getConfirmPassword())) {
-            return new RegisterResponse("passwords_not_matched");
+            throw new CommonException("1001", "password and confirmPassword not matched", HttpStatus.BAD_REQUEST);
+//            return new RegisterResponse("passwords_not_matched");
         }
 
         Optional<User> byUsernameOptional = userRepository.findByUsername(registerRequest.getUsername());

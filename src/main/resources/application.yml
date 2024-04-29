@@ -4,8 +4,8 @@ server:
 spring:
   datasource:
     url: jdbc:mysql://learning-vsacademy.j.aivencloud.com:27537/defaultdb?ssl-mode=REQUIRED
-    username: #username
-    password: #password
+    username:
+    password:
     driverClassName: com.mysql.cj.jdbc.Driver
 #    url: jdbc:mysql://allinone.cn5daduvgses.us-east-1.rds.amazonaws.com:3306/vs_learning
 #    username: admin

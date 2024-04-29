@@ -4,20 +4,14 @@ import com.example.learningSpring.model.dto.request.IdCardRequest;
 import com.example.learningSpring.model.dto.response.IdCardResponse;
 import com.example.learningSpring.model.entity.IdCard;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
-import org.mapstruct.factory.Mappers;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 /**
  * @author Shirali Alihummatov
  */
-@Mapper
+@Mapper(componentModel = "spring")
 public interface IdCardMapper {
-
-    IdCardMapper INSTANCE = Mappers.getMapper(IdCardMapper.class);
 
     List<IdCardResponse> toIdCardResponseList(List<IdCard> idCardList);
 
