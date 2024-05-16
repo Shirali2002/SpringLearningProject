@@ -3,6 +3,7 @@ package com.example.learningSpring.mapper;
 import com.example.learningSpring.model.dto.request.IdCardRequest;
 import com.example.learningSpring.model.dto.response.IdCardResponse;
 import com.example.learningSpring.model.entity.IdCard;
+import com.example.learningSpring.model.entity.jpa.IdCardJpa;
 import org.mapstruct.Mapper;
 
 import java.util.List;
@@ -28,8 +29,6 @@ public interface IdCardMapper {
 //    }
 
 
-
-
 //    @Mapping(target = "id", constant = "-1L")
     IdCard toIdCard(IdCardRequest idCardRequest);
 
@@ -41,5 +40,11 @@ public interface IdCardMapper {
 //    @Mapping(target = "series", source = "idCardRequest.series")
 //    @Mapping(target = "serialNumber", source = "idCardRequest.serialNumber")
     IdCard toIdCard(Long id, IdCardRequest idCardRequest);
+
+
+    List<IdCardResponse> toIdCardResponseListJpa(List<IdCardJpa> idCardList);
+    IdCardResponse toIdCardResponseJpa(IdCardJpa idCard);
+    IdCardJpa toIdCardJpa(IdCardRequest idCardRequest);
+    IdCardJpa toIdCardJpa(Long id, IdCardRequest idCardRequest);
 
 }

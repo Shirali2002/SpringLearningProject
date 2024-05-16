@@ -4,6 +4,7 @@ import com.example.learningSpring.model.dto.request.IdCardRequest;
 import com.example.learningSpring.model.dto.response.IdCardResponse;
 import com.example.learningSpring.service.IdCardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,17 +21,21 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/id-cards")
 public class IdCardController {
 
     private final IdCardService idCardService;
+
+    public IdCardController(@Qualifier("idCardJpaServiceImpl") IdCardService idCardService) {
+        this.idCardService = idCardService;
+    }
 
     @GetMapping("/no-auth")
     public ResponseEntity<List<IdCardResponse>> getAllIdCards() {
         List<IdCardResponse> idCards = idCardService.getAllIdCards();
         return ResponseEntity.ok(idCards);
     }
+
 
     @GetMapping("/no-auth/id/{id}")
     public ResponseEntity<IdCardResponse> getIdCardById(@PathVariable("id") Long id) {

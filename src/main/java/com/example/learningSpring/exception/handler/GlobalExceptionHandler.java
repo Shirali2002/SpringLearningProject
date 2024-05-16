@@ -21,6 +21,15 @@ public class GlobalExceptionHandler {
                 .body(errorDetails);
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorDetails> handleInternalServerError(Exception exception) {
+        exception.printStackTrace();
+        ErrorDetails errorDetails = new ErrorDetails("5500", exception.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(errorDetails);
+    }
+
 //    @ExceptionHandler(UserNotExistException.class)
 //    public ResponseEntity<ErrorDetails> handleUserNotExistException(UserNotExistException exception) {
 //        ErrorDetails errorDetails = new ErrorDetails("1000", "user not exist in db");
