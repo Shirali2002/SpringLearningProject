@@ -7,8 +7,10 @@ spring:
     username:
     password:
     driverClassName: com.mysql.cj.jdbc.Driver
+    hikari:
+      auto-commit: false
   jpa:
-    hibernate.ddl-auto: create
+    hibernate.ddl-auto: update
     generate-ddl: true
     show-sql: true
     properties:
@@ -20,7 +22,9 @@ mybatis:
   config-location: classpath:mybatis/mybatis-config.xml
   mapper-locations: classpath:mybatis/mapper/*.xml
   type-aliases-package: com.example.learningSpring.model.entity
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 security:
-  secret-key: CgTOA2QC9nxYspeBZBRsEIoDmpBbGTjfDCE6WfnOHHrA7rgHafqC5u1m6GL22pNY
+  secret-key:
   expiration: 300000 #1000*60*5

@@ -9,7 +9,9 @@
         <setting name="jdbcTypeForNull" value="NULL"/>
         <setting name="mapUnderscoreToCamelCase" value="true"/> <!-- TODO: izah -->
         <setting name="lazyLoadingEnabled" value="false"/>
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
     </settings>
+
 
     <typeAliases>
 

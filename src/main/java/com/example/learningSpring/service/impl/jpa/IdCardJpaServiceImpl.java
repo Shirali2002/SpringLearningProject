@@ -9,6 +9,7 @@ import com.example.learningSpring.model.entity.jpa.IdCardJpa;
 import com.example.learningSpring.repository.jpa.IdCardJpaRepository;
 import com.example.learningSpring.repository.mapper.IdCardMyBatisRepository;
 import com.example.learningSpring.service.IdCardService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -66,7 +67,7 @@ public class IdCardJpaServiceImpl implements IdCardService {
 
     @Override
     public void updateIdCardAge(Long id, Integer age) {
-//        idCardMyBatisRepository.updateAge(id, age);
+        idCardJpaRepository.updateIdCardJpaAgeById(age, id);
     }
 
     @Override

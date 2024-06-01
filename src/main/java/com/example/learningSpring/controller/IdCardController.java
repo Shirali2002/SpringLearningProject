@@ -26,7 +26,7 @@ public class IdCardController {
 
     private final IdCardService idCardService;
 
-    public IdCardController(@Qualifier("idCardJpaServiceImpl") IdCardService idCardService) {
+    public IdCardController(@Qualifier("idCardServiceImpl") IdCardService idCardService) {
         this.idCardService = idCardService;
     }
 

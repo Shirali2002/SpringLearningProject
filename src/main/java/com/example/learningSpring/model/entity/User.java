@@ -28,9 +28,7 @@ public class User implements UserDetails {
     private String surname;
     private LocalDateTime createdAt;
     private LocalDateTime lastLogin;
-    private Long idCardId;
-
-
+    private IdCard idCard;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

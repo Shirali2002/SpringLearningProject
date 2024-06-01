@@ -24,6 +24,14 @@
         WHERE u.username = #{username};
     </select>
 
+    <select id="findUserWithIdCardById" resultType="UserWrapper">
+        SELECT <include refid="userIdCardWrapperBaseColumns"></include>
+          FROM defaultdb.user u
+     Left Join defaultdb.id_card_jpa i
+            ON i.id = u.idcard_id
+         WHERE u.id = #{id};
+    </select>
+
     <sql id="userBaseColumns">
         u.id,
         u.username,
@@ -33,6 +41,23 @@
         u.created_at,
         u.last_login,
         u.idcard_id
+    </sql>
+
+    <sql id="userIdCardWrapperBaseColumns">
+        u.id as us_id,
+        u.name as us_name,
+        u.surname as us_surname,
+        u.username,
+        u.password,
+        u.created_at,
+        u.last_login,
+        i.id as id_card_id,
+        i.age,
+        i.fin_code,
+        i.serial_number,
+        i.series,
+        i.name as id_card_name,
+        i.surname as id_card_surname
     </sql>
 
 </mapper>

@@ -6,11 +6,14 @@ import com.example.learningSpring.model.dto.request.LoginRequest;
 import com.example.learningSpring.model.dto.request.RegisterRequest;
 import com.example.learningSpring.model.dto.response.LoginResponse;
 import com.example.learningSpring.model.dto.response.RegisterResponse;
+import com.example.learningSpring.model.dto.response.UserResponse;
 import com.example.learningSpring.model.entity.User;
+import com.example.learningSpring.model.entity.UserWrapper;
 import com.example.learningSpring.repository.mapper.UserMyBatisRepository;
 import com.example.learningSpring.service.UserService;
 import com.example.learningSpring.util.JwtProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,6 +27,7 @@ import java.util.Optional;
  * @author Shirali Alihummatov
  */
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -80,5 +84,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> getByUsername(String username) {
         return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public UserResponse getById(Long id) {
+        UserWrapper userWrapper = userRepository.findUserWithIdCardById(id).orElse(null);
+        log.info("service userWrapper: {}", userWrapper);
+
+        return userMapper.toUserResponse(userWrapper);
     }
 }
